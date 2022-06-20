@@ -32,7 +32,7 @@ export class AppService {
     let getLastestBook = await this.bookRepo.query(this.getMaxByType(enumProvider.tiki_light_novel));
 
     if (!getLastestBook.length) {
-      lastestBook.push(await this.createNewObject(data, enumProvider.tiki_light_novel));
+      lastestBook.push(await this.createNewObject(data[0], enumProvider.tiki_light_novel));
     }
     else {
       var getLastestId = getLastestBook[0].book_id;
