@@ -78,7 +78,6 @@ export class AppService {
           await this.delay(1000);
         }
       }
-      await TelegramManager.ontext(+ process.env.GROUP_ID, "test");
     }
   }
 }
