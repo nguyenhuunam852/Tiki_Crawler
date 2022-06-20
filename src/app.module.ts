@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database.module';
 import { Crawler } from './utils/crawler';
+import { AxiosRequest } from './utils/axios_request';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -13,6 +14,6 @@ import { Crawler } from './utils/crawler';
     // Crawler
   ],
   controllers: [AppController],
-  providers: [AppService, Crawler],
+  providers: [AppService, AxiosRequest, Crawler],
 })
 export class AppModule { }

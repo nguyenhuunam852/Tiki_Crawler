@@ -1,10 +1,9 @@
-import * as parse from 'node-html-parser'
 import * as wrapper from 'axios-cookiejar-support'
 import { CookieJar } from 'tough-cookie'
 import * as axios from 'axios'
-import { tiki_config } from 'src/config/tiki_config';
+import { Injectable } from '@nestjs/common';
 
-
+@Injectable()
 export class AxiosRequest {
     private client: any;
     private jar: CookieJar;
