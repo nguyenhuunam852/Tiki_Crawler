@@ -39,7 +39,7 @@ export class AppService {
     return await this.bookRepo.save(newObject);
   }
 
-  async getListBooks(page: number = 0) {
+  async getListBooks(page: number = 0): Promise<Books[]> {
     let lastestBook = [];
     let convertLink = [];
     let data = await this.crawler.getListBook(page);
@@ -90,7 +90,7 @@ export class AppService {
       if (listBooks.length > 0) {
         for (let book of listBooks) {
           console.log(book);
-          await TelegramManager.ontext(+ process.env.GROUP_ID, `Sách mới ${book.name} \n link: ${book.shortList}`);
+          await TelegramManager.ontext(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link}`);
           await this.delay(1000);
         }
 
