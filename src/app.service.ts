@@ -70,7 +70,7 @@ export class AppService {
 
   async crawlByTime() {
     while (true) {
-      await this.delay(10000);
+      await this.delay(180000);
       let listBooks = await this.getListBooks();
       if (listBooks.length > 0) {
         for (let book of listBooks) {
