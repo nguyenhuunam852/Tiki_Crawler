@@ -28,12 +28,14 @@
     "@nestjs/typeorm": "^8.1.4",
     "axios": "^0.27.2",
     "axios-cookiejar-support": "^4.0.2",
+    "mysql2": "^2.3.3",
     "node-html-parser": "^5.3.3",
     "node-telegram-bot-api": "^0.57.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "tough-cookie": "^4.0.0"
+    "tough-cookie": "^4.0.0",
+    "typeorm": "^0.3.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

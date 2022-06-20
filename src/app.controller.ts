@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   async getHello() {
-    return await this.appService.getHello();
+    return await this.appService.getListBooks();
   }
 
 }
