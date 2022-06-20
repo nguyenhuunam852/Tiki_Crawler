@@ -67,13 +67,14 @@ export class AppService {
         return lastestBook;
       }
     }
-
-    let urlList = lastestBook.map(item => tiki_config.redirect_link.replace(':url', item.book_url));
-    convertLink = await this.rentrack.requestRenTrackConvert(urlList);
-    lastestBook.forEach((item, index) => {
-      item.book_short_link = convertLink['data'][urlList[index]].shortlink
-    })
-    await this.bookRepo.save(lastestBook);
+    if (lastestBook.length > 0) {
+      let urlList = lastestBook.map(item => tiki_config.redirect_link.replace(':url', item.book_url));
+      convertLink = await this.rentrack.requestRenTrackConvert(urlList);
+      lastestBook.forEach((item, index) => {
+        item.book_short_link = convertLink['data'][urlList[index]].shortlink
+      })
+      await this.bookRepo.save(lastestBook);
+    }
 
     return lastestBook;
   }
