@@ -1,16 +1,18 @@
 import * as parse from 'node-html-parser'
 import * as wrapper from 'axios-cookiejar-support'
-import * as CookieJar from 'tough-cookie'
+import { CookieJar } from 'tough-cookie'
 import * as axios from 'axios'
 import { tiki_config } from 'src/config/tiki_config';
 
 
 export class AxiosRequest {
     private client: any;
+    private jar: CookieJar;
 
     constructor() {
-        var jar = new CookieJar();
-        this.client = wrapper.wrapper(axios.default.create({ jar }));
+
+        this.jar = new CookieJar();
+        this.client = wrapper.wrapper(axios.default.create({ jar: this.jar }));
     }
 
     async postRequest() {

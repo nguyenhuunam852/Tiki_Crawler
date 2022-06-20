@@ -1,7 +1,6 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
-import '../utils/polyfill';
 
 dotenv.config();
 
