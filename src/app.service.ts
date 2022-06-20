@@ -70,7 +70,7 @@ export class AppService {
 
   async crawlByTime() {
     while (true) {
-      await this.delay(180000);
+      await this.delay(10000);
       let listBooks = await this.getListBooks();
       if (listBooks.length > 0) {
         for (let book of listBooks) {
@@ -78,6 +78,7 @@ export class AppService {
           await this.delay(1000);
         }
       }
+      await TelegramManager.ontext(+ process.env.GROUP_ID, "test");
     }
   }
 }
