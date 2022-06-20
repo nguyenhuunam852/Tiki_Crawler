@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Books } from './entities/tiki_books';
 import { Repository } from 'typeorm';
 import { enumProvider } from "src/enum/provider.enum";
+import { listenerCount } from 'process';
+import { TelegramManager } from './utils/telegram';
 
 
 @Injectable()
@@ -11,7 +13,14 @@ export class AppService {
   constructor(
     @InjectRepository(Books)
     private readonly bookRepo: Repository<Books>
-    , private readonly crawler: Crawler) { }
+    , private readonly crawler: Crawler) {
+
+    this.crawlByTime()
+
+  }
+  async delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 
   getMaxByType(types) {
@@ -20,8 +29,8 @@ export class AppService {
 
   async createNewObject(data, type) {
     var newObject = new Books();
-    newObject.book_id = data[0].id;
-    newObject.book_name = data[0].name;
+    newObject.book_id = data.id;
+    newObject.book_name = data.name;
     newObject.providers = type;
     return await this.bookRepo.save(newObject);
   }
@@ -59,4 +68,16 @@ export class AppService {
     return getListBook;
   }
 
+  async crawlByTime() {
+    while (true) {
+      await this.delay(10000);
+      let listBooks = await this.getListBooks();
+      if (listBooks.length > 0) {
+        for (let book of listBooks) {
+          await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
+          await this.delay(1000);
+        }
+      }
+    }
+  }
 }

@@ -13,6 +13,7 @@ export class Crawler {
         this.eachPage = 10;
     }
 
+
     async getListBook(page: number): Promise<TikiBooks[]> {
         let numberPage: number = page * this.eachPage + this.eachPage;
         var response = await this.axiosRequest.getRequest(tiki_config.base_url_light_novel.replace(':page', numberPage.toString()), {}, {});
@@ -21,5 +22,7 @@ export class Crawler {
         });
         return tiki_book;
     }
+
+
 }
 
