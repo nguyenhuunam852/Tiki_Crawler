@@ -6,8 +6,13 @@ export class AppController {
   constructor(private readonly appService: AppService) { }
 
   @Get()
-  async getHello() {
+  async getNewestBook() {
     return await this.appService.getListBooks();
+  }
+
+  @Get('local')
+  async getNewestBookLocal() {
+    return await this.appService.getListBooksLocal();
   }
 
 }

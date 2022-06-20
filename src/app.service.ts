@@ -53,4 +53,10 @@ export class AppService {
 
     return lastestBook;
   }
+
+  async getListBooksLocal() {
+    let getListBook = await this.bookRepo.find();
+    return getListBook;
+  }
+
 }
