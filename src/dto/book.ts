@@ -4,4 +4,6 @@ export class TikiBooks {
     }
     public id: string;
     public name: string;
+    public url_path: string;
+    public shortList: string;
 }

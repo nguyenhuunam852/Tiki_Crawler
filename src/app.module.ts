@@ -7,6 +7,7 @@ import { Crawler } from './utils/crawler';
 import { AxiosRequest } from './utils/axios_request';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Books } from './entities/tiki_books';
+import { RenTrack } from './utils/rentrack';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -16,6 +17,6 @@ import { Books } from './entities/tiki_books';
   TypeOrmModule.forFeature([Books])
   ],
   controllers: [AppController],
-  providers: [AppService, AxiosRequest, Crawler],
+  providers: [AppService, Crawler, RenTrack],
 })
 export class AppModule { }

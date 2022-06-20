@@ -14,6 +14,14 @@ export class Books {
     @Column({ type: 'varchar', length: 255, nullable: false })
     public book_name: string;
 
+    @Column({ type: 'varchar', length: 255, nullable: false })
+    public book_url: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: false, default: "" })
+    public book_short_link: string;
+
+
+
     @Column({ type: 'enum', enum: enumProvider, nullable: false, default: enumProvider.tiki_light_novel })
     public providers: enumProvider;
 

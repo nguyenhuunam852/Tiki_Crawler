@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { enumProvider } from "src/enum/provider.enum";
 import { listenerCount } from 'process';
 import { TelegramManager } from './utils/telegram';
+import { RenTrack } from './utils/rentrack';
+import { tiki_config } from './config/tiki_config';
 
 
 @Injectable()
@@ -13,7 +15,8 @@ export class AppService {
   constructor(
     @InjectRepository(Books)
     private readonly bookRepo: Repository<Books>
-    , private readonly crawler: Crawler) {
+    , private readonly crawler: Crawler
+    , private readonly rentrack: RenTrack) {
 
     this.crawlByTime()
 
@@ -32,15 +35,21 @@ export class AppService {
     newObject.book_id = data.id;
     newObject.book_name = data.name;
     newObject.providers = type;
+    newObject.book_url = data.url_path;
     return await this.bookRepo.save(newObject);
   }
 
   async getListBooks(page: number = 0) {
     let lastestBook = [];
+    let convertLink = [];
     let data = await this.crawler.getListBook(page);
     let getLastestBook = await this.bookRepo.query(this.getMaxByType(enumProvider.tiki_light_novel));
 
     if (!getLastestBook.length) {
+      // let urlList = data.map(item => tiki_config.redirect_link.replace(':url', item.url_path));
+      // convertLink = await this.rentrack.requestRenTrackConvert(urlList);
+      // console.log(convertLink['data'])
+      // data.forEach((item, index) => item.shortList = convertLink['data'][urlList[index]].shortlink)
       lastestBook.push(await this.createNewObject(data[0], enumProvider.tiki_light_novel));
     }
     else {
@@ -55,10 +64,16 @@ export class AppService {
       }
       if (keepCrawling) {
         lastestBook.concat(this.getListBooks(page += 1));
+        return lastestBook;
       }
     }
 
-    console.log(lastestBook)
+    let urlList = lastestBook.map(item => tiki_config.redirect_link.replace(':url', item.book_url));
+    convertLink = await this.rentrack.requestRenTrackConvert(urlList);
+    lastestBook.forEach((item, index) => {
+      item.book_short_link = convertLink['data'][urlList[index]].shortlink
+    })
+    await this.bookRepo.save(lastestBook);
 
     return lastestBook;
   }
@@ -74,9 +89,14 @@ export class AppService {
       let listBooks = await this.getListBooks();
       if (listBooks.length > 0) {
         for (let book of listBooks) {
-          await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
+          console.log(book);
+          await TelegramManager.ontext(+ process.env.GROUP_ID, `Sách mới ${book.name} \n link: ${book.shortList}`);
           await this.delay(1000);
         }
+
+        // await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
+        // await this.delay(1000);
+
       }
     }
   }

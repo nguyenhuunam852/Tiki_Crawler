@@ -14,8 +14,9 @@ export class AxiosRequest {
         this.client = wrapper.wrapper(axios.default.create({ jar: this.jar }));
     }
 
-    async postRequest() {
-
+    async postRequest(url: string, config: {}, data: {}) {
+        var response = await this.client.post(url, config, data)
+        return await response.data;
     }
 
     async getRequest(url: string, config: {}, data: {}) {
