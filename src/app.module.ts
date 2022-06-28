@@ -22,8 +22,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
   controllers: [AppController],
   providers: [AppService, Crawler, RenTrack, DatabaseManager,
     {
-      useFactory: async (crawler: Crawler) => {
-        return new TelegramManager(crawler);
+      useFactory: async () => {
+        return new TelegramManager();
       },
       provide: TelegramManager,
       inject: [Crawler]
