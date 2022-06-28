@@ -17,7 +17,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
   imports: [ConfigModule.forRoot({
     isGlobal: true
   }),
-    // TypeOrmModule.forFeature([Books])
+  TypeOrmModule.forFeature([Books])
   ],
   controllers: [AppController],
   providers: [AppService, Crawler, RenTrack, DatabaseManager,
