@@ -22,7 +22,12 @@ export class TelegramManager {
     }
     public static async ontext(group, message) {
         if (token) {
-            bot.sendMessage(group, message);
+            try {
+                bot.sendMessage(group, message);
+            }
+            catch (e) {
+                console.log(e)
+            }
         }
     }
 }

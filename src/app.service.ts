@@ -31,12 +31,21 @@ export class AppService {
   }
 
   async createNewObject(data, type) {
-    var newObject = new Books();
-    newObject.book_id = data.id;
-    newObject.book_name = data.name;
-    newObject.providers = type;
-    newObject.book_url = data.url_path;
-    return await this.bookRepo.save(newObject);
+    try {
+      let get_obj = await this.bookRepo.findOne({ where: { book_id: data.id } })
+      if (get_obj) return null;
+
+      var newObject = new Books();
+      newObject.book_id = data.id;
+      newObject.book_name = data.name;
+      newObject.providers = type;
+      newObject.book_url = data.url_path;
+      return await this.bookRepo.save(newObject);
+    }
+    catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   async getListBooks(page: number = 0): Promise<Books[]> {
@@ -50,7 +59,10 @@ export class AppService {
       // convertLink = await this.rentrack.requestRenTrackConvert(urlList);
       // console.log(convertLink['data'])
       // data.forEach((item, index) => item.shortList = convertLink['data'][urlList[index]].shortlink)
-      lastestBook.push(await this.createNewObject(data[0], enumProvider.tiki_light_novel));
+      let check = await this.createNewObject(data[0], enumProvider.tiki_light_novel)
+      if (check) {
+        lastestBook.push(check);
+      }
     }
     else {
       var getLastestId = getLastestBook[0].book_id;
@@ -60,7 +72,10 @@ export class AppService {
           keepCrawling = false;
           break;
         }
-        lastestBook.push(await this.createNewObject(book, enumProvider.tiki_light_novel));
+        let check = await this.createNewObject(book, enumProvider.tiki_light_novel)
+        if (check) {
+          lastestBook.push(check);
+        }
       }
       if (keepCrawling) {
         lastestBook.concat(this.getListBooks(page += 1));
