@@ -27,25 +27,17 @@ export class RenTrack {
 			"idLoginPassword": process.env.idLoginPassword,
 			"idButton": process.env.idButton
 		}
-		await this.client.postRequest(rentrack_config.login_link, qs.stringify(data), {})
+		await this.client.postRequest(null, rentrack_config.login_link, qs.stringify(data), {})
 
-		var response = await this.client.getRequest(rentrack_config.smart_convert, {}, {});
-		// console.log(response);
-
+		var response = await this.client.getRequest(null, rentrack_config.smart_convert, {}, {});
 		let token = this.getToken(response);
 		let t = (+ new Date()).toString();
-
-		console.log(token)
-
 		let convertData = {
 			"site_id": "10335",
 			"url": urlList,
 			"shortlink": 1
 		}
-
-		console.log(convertData)
-
-		var response = await this.client.postRequest(rentrack_config.convert_link.replace(':token', token).replace(':t', t), convertData, {})
+		var response = await this.client.postRequest(null, rentrack_config.convert_link.replace(':token', token).replace(':t', t), convertData, {})
 		return response;
 
 	}
