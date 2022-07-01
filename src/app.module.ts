@@ -17,13 +17,13 @@ import { DataSource, DataSourceOptions } from 'typeorm';
   imports: [ConfigModule.forRoot({
     isGlobal: true
   }),
-    // TypeOrmModule.forFeature([Books])
+  TypeOrmModule.forFeature([Books])
   ],
   controllers: [AppController],
   providers: [AppService, Crawler, RenTrack, DatabaseManager,
     {
-      useFactory: async (crawler: Crawler) => {
-        return new TelegramManager(crawler);
+      useFactory: async () => {
+        return new TelegramManager();
       },
       provide: TelegramManager,
       inject: [Crawler]
