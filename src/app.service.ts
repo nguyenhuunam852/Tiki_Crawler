@@ -65,14 +65,6 @@ export class AppService {
         return lastestBook;
       }
     }
-    // if (lastestBook.length > 0) {
-    //   let urlList = lastestBook.map(item => tiki_config.redirect_link.replace(':url', item.book_url));
-    //   convertLink = await this.rentrack.requestRenTrackConvert(urlList);
-    //   lastestBook.forEach((item, index) => {
-    //     item.book_short_link = convertLink['data'][urlList[index]].shortlink
-    //   })
-    //   lastestBook.push(await this.database.saveEntities(Books, lastestBook));
-    // }
 
     return lastestBook;
   }
@@ -85,15 +77,20 @@ export class AppService {
   async crawlByTime() {
     while (true) {
       await this.delay(180000);
-      let listBooks = await this.getListBooks();
-      if (listBooks.length > 0) {
-        for (let book of listBooks) {
-          await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link}`);
-          await this.delay(1000);
-        }
-        // await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
-        // await this.delay(1000);
+      try {
+        let listBooks = await this.getListBooks();
+        if (listBooks.length > 0) {
+          for (let book of listBooks) {
+            await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link}`);
+            await this.delay(1000);
+          }
+          // await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
+          // await this.delay(1000);
 
+        }
+      }
+      catch (e) {
+        console.log(e);
       }
     }
   }
