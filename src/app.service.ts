@@ -22,7 +22,7 @@ export class AppService {
     , private readonly database: DatabaseManager
   ) {
 
-    // this.crawlByTime()
+    this.crawlByTime()
 
   }
   async delay(ms: number) {
@@ -30,43 +30,82 @@ export class AppService {
   }
 
   async getListBooks(page: number = 0): Promise<Books[]> {
-    let lastestBook = [];
-    let convertLink = [];
-    let data = await this.crawler.getListBook(page);
-    let getLastestBook = await this.database.query(this.database.getMaxByType(enumProvider.tiki_light_novel));
+    try {
+      let lastestBook = [];
+      let convertLink = [];
+      let data = await this.crawler.getListBook(page);
+      let getLastestBook = await this.database.query(this.database.getMaxByType(enumProvider.tiki_light_novel));
+      console.log(getLastestBook);
+      if (!getLastestBook.length) {
+        data[0]["book_id"] = data[0].id;
+        data[0]["book_name"] = data[0].name;
+        data[0]["book_url"] = data[0].url_path;
 
-    if (!getLastestBook.length) {
-      data[0]["book_id"] = data[0].id;
-      data[0]["book_name"] = data[0].name;
-      data[0]["book_url"] = data[0].url_path;
-      data[0]["id"] = null;
-
-      // data[0].providers = book.providers;
-      lastestBook.push(await this.database.saveEntities(Books, data[0]));
-    }
-    else {
-      var getLastestId = getLastestBook[0].book_id;
-      let keepCrawling = true;
-      for (var book of data) {
-        if (book.id == getLastestId) {
-          keepCrawling = false;
-          break;
+        let checkObject = await this.database.findOne(Books, { book_id: data[0].id });
+        if (checkObject) {
+          data[0]["id"] = checkObject.id.toString()
         }
-        book["book_id"] = book.id;
-        book["book_name"] = book.name;
-        book["book_url"] = book.url_path;
-        book["id"] = null;
+        else {
+          data[0]["id"] = null;
+        }
+        lastestBook.push(data[0]);
+        // data[0].providers = book.providers;
+      }
+      else {
+        var getLastestId = getLastestBook[0].book_id;
+        let keepCrawling = true;
 
-        book.providers = enumProvider.tiki_light_novel;
-        lastestBook.push(await this.database.saveEntities(Books, book));
+        for (var book of data) {
+
+          if (+book.id == + getLastestId || page == 10) {
+            keepCrawling = false;
+            break;
+          }
+
+          book["book_id"] = book.id;
+          book["book_name"] = book.name;
+          book["book_url"] = book.url_path;
+          let checkObject = await this.database.findOne(Books, { book_id: book.id });
+          if (checkObject) {
+            book["id"] = checkObject.id.toString()
+          }
+          else {
+            book["id"] = null;
+          }
+
+          book.providers = enumProvider.tiki_light_novel;
+          lastestBook.push(book);
+        }
+        if (keepCrawling) {
+          lastestBook.concat(this.getListBooks(page += 1));
+          return lastestBook;
+        }
       }
-      if (keepCrawling) {
-        lastestBook.concat(this.getListBooks(page += 1));
-        return lastestBook;
+      if (lastestBook.length > 0) {
+        let urlList = lastestBook.map(item => tiki_config.redirect_link.replace(':url', item.book_url));
+        convertLink = await this.rentrack.requestRenTrackConvert(urlList);
+        console.log(convertLink)
+
+        lastestBook.forEach((item, index) => {
+          item.book_short_link = convertLink['data'][urlList[index]].shortlink
+        })
+
+        await this.database.saveEntities(Books, lastestBook)
       }
+
+      if (lastestBook.length > 0) {
+        for (let book of lastestBook) {
+          await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link}`);
+          await this.delay(1000);
+        }
+      }
+
+      return lastestBook;
     }
-
-    return lastestBook;
+    catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   // async getListBooksLocal() {
@@ -78,16 +117,7 @@ export class AppService {
     while (true) {
       await this.delay(180000);
       try {
-        let listBooks = await this.getListBooks();
-        if (listBooks.length > 0) {
-          for (let book of listBooks) {
-            await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link}`);
-            await this.delay(1000);
-          }
-          // await TelegramManager.ontext(+ process.env.GROUP_ID, "new book " + book.book_name);
-          // await this.delay(1000);
-
-        }
+        await this.getListBooks();
       }
       catch (e) {
         console.log(e);

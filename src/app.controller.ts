@@ -8,7 +8,10 @@ export class AppController {
   @Get()
   async getNewestBook() {
     let result = await this.appService.getListBooks();
-    return result.splice(0, result.length - 1);
+    if (result) {
+      return result.splice(0, result.length - 1);
+    }
+    return "errors";
   }
 
   // @Get('local')

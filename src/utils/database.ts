@@ -9,6 +9,11 @@ export class DatabaseManager {
         private dataSource: DataSource,
     ) {
     }
+    async findOne<T>(args: new () => T, condition) {
+        const repo = this.dataSource.getRepository(args);
+        return repo.findOne({ where: condition });
+    }
+
     async saveEntities<T>(args: new () => T, object) {
         if (typeof object == "object") {
             const repo = this.dataSource.getRepository(args);
