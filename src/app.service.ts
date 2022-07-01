@@ -29,22 +29,6 @@ export class AppService {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-
-  // getMaxByType(types) {
-  //   return `select * from books having id in (select Max(id) from books where providers = '${types}')`
-  // }
-
-
-
-  // async createNewObject(data, type) {
-  //   var newObject = new Books();
-  //   newObject.book_id = data.id;
-  //   newObject.book_name = data.name;
-  //   newObject.providers = type;
-  //   newObject.book_url = data.url_path;
-  //   return await this.bookRepo.save(newObject);
-  // }
-
   async getListBooks(page: number = 0): Promise<Books[]> {
     let lastestBook = [];
     let convertLink = [];
