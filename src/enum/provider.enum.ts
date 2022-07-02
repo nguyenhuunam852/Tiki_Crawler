@@ -6,4 +6,5 @@ export enum enumProvider {
     tiki_trading_ngon_tinh = "tiki_trading_ngon_tinh",
     tiki_trading_dong_tinh = "tiki_trading_dong_tinh",
     tiki_trading_tranh_truyen = "tiki_trading_tranh_truyen",
+    tiki_trading_manga = "tiki_trading_manga",
 }
