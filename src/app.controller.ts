@@ -14,9 +14,14 @@ export class AppController {
     return "errors";
   }
 
-  // @Get('local')
-  // async getNewestBookLocal() {
-  //   return await this.appService.getListBooksLocal();
-  // }
+
+  @Get('test')
+  async getNewestTikiTrading() {
+    let result = await this.appService.getListBookTikiTrading();
+    if (result) {
+      return result.splice(0, result.length - 1);
+    }
+    return "errors";
+  }
 
 }
