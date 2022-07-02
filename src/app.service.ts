@@ -43,7 +43,7 @@ export class AppService {
     ]
 
 
-    // this.crawlByTime()
+    this.crawlByTime()
 
   }
   async delay(ms: number) {
