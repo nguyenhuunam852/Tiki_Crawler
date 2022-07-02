@@ -38,7 +38,6 @@ export class Crawler {
             item.providers = enumProvider[provider];
             return ConvertJSON.convertTikiBooktoDto(item);
         });
-        console.log(tiki_book)
         return tiki_book;
     }
 

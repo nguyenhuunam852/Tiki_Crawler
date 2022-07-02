@@ -154,7 +154,9 @@ export class AppService {
       }
       else {
         var getLastestId = getLastestBook[0].book_id;
+        console.log("lastest: " + getLastestId)
         for (var book of data) {
+          console.log(book.id)
           if (+book.id == + getLastestId) {
             break;
           }
