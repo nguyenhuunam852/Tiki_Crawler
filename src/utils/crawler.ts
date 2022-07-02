@@ -26,6 +26,12 @@ export class Crawler {
         return tiki_book;
     }
 
+    async getDayAgo(Id: number): Promise<number> {
+        var response = await this.client.getRequest(null, tiki_config.tiki_info.replace(':id', Id.toString()), {}, {});
+        return + response.day_ago_created;
+    }
+
+
 
     async getListBookTikiTrading(urlLink: string, provider: string): Promise<TikiBooks[]> {
         let numberPage: number = 10;

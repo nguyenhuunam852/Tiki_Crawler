@@ -138,10 +138,12 @@ export class AppService {
 
       var data = await this.crawler.getListBookTikiTrading(url["url"], url["provider"]);
       let getLastestBook = await this.database.query(this.database.getMaxByType(enumProvider[url["provider"]]));
+      console.log(getLastestBook)
       if (!getLastestBook.length) {
         data[0]["book_id"] = data[0].id;
         data[0]["book_name"] = data[0].name;
         data[0]["book_url"] = data[0].url_path;
+        data[0]["day_ago"] = await this.crawler.getDayAgo(+ data[0]["book_id"]);
 
         let checkObject = await this.database.findOne(Books, { book_id: data[0].id });
         if (checkObject) {
@@ -153,16 +155,19 @@ export class AppService {
         lastestBook.push(data[0]);
       }
       else {
-        var getLastestId = getLastestBook[0].book_id;
-        console.log("lastest: " + getLastestId)
+        var getLastestDay = getLastestBook[0].day_ago;
+        console.log("Last:" + getLastestBook[0].book_id)
+
         for (var book of data) {
-          console.log(book.id)
-          if (+book.id == + getLastestId) {
-            break;
-          }
           book["book_id"] = book.id;
           book["book_name"] = book.name;
           book["book_url"] = book.url_path;
+          book["day_ago"] = await this.crawler.getDayAgo(+ data[0]["book_id"]);
+          console.log(book["book_id"])
+
+          if (book["day_ago"] >= getLastestDay || book["book_id"] == getLastestBook[0].book_id) {
+            break;
+          }
           let checkObject = await this.database.findOne(Books, { book_id: book.id });
           if (checkObject) {
             book["id"] = checkObject.id.toString()
@@ -185,12 +190,13 @@ export class AppService {
 
       lastestBookTrading = lastestBookTrading.concat(lastestBook);
     }
-    if (lastestBookTrading.length) {
-      for (let book of lastestBookTrading) {
-        await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link} \n thể loại: ${book.providers}`);
-        await this.delay(1000);
-      }
-    }
+    console.log(lastestBookTrading)
+    // if (lastestBookTrading.length) {
+    //   for (let book of lastestBookTrading) {
+    //     await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link} \n thể loại: ${book.providers}`);
+    //     await this.delay(1000);
+    //   }
+    // }
 
     return lastestBookTrading;
   }
