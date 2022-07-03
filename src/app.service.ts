@@ -151,8 +151,8 @@ export class AppService {
         }
         else {
           data[0]["id"] = null;
+          lastestBook.push(data[0]);
         }
-        lastestBook.push(data[0]);
       }
       else {
         var getLastestDay = getLastestBook[0].day_ago;
@@ -174,8 +174,8 @@ export class AppService {
           }
           else {
             book["id"] = null;
+            lastestBook.push(book);
           }
-          lastestBook.push(book);
         }
       }
       if (lastestBook.length > 0) {
@@ -191,12 +191,12 @@ export class AppService {
       lastestBookTrading = lastestBookTrading.concat(lastestBook);
     }
     console.log(lastestBookTrading)
-    // if (lastestBookTrading.length) {
-    //   for (let book of lastestBookTrading) {
-    //     await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link} \n thể loại: ${book.providers}`);
-    //     await this.delay(1000);
-    //   }
-    // }
+    if (lastestBookTrading.length) {
+      for (let book of lastestBookTrading) {
+        await this.telegram.onText(+ process.env.GROUP_ID, `Sách mới ${book.book_name} \n link: ${book.book_short_link} \n thể loại: ${book.providers}`);
+        await this.delay(1000);
+      }
+    }
 
     return lastestBookTrading;
   }
