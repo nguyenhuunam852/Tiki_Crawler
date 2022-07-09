@@ -128,7 +128,6 @@ export class AppService {
     }
   }
 
-
   async getListBookTikiTrading() {
     let lastestBookTrading = [];
     let convertLink = [];
@@ -154,7 +153,6 @@ export class AppService {
       }
       else {
         var getLastestId = getLastestBook[0].book_id;
-        console.log("lastest: " + getLastestId)
         for (var book of data) {
           console.log(book.id)
           if (+book.id == + getLastestId) {
@@ -164,13 +162,10 @@ export class AppService {
           book["book_name"] = book.name;
           book["book_url"] = book.url_path;
           let checkObject = await this.database.findOne(Books, { book_id: book.id });
-          if (checkObject) {
-            book["id"] = checkObject.id.toString()
-          }
-          else {
+          if (!checkObject) {
             book["id"] = null;
+            lastestBook.push(book);
           }
-          lastestBook.push(book);
         }
       }
       if (lastestBook.length > 0) {
@@ -181,9 +176,8 @@ export class AppService {
         })
 
         await this.database.saveEntities(Books, lastestBook);
+        lastestBookTrading = lastestBookTrading.concat(lastestBook);
       }
-
-      lastestBookTrading = lastestBookTrading.concat(lastestBook);
     }
     if (lastestBookTrading.length) {
       for (let book of lastestBookTrading) {
@@ -195,11 +189,15 @@ export class AppService {
     return lastestBookTrading;
   }
 
+  async getBookInfo() {
+    // this.crawler.getInfoOfBook()
+    // return lastestBookTrading;
+  }
+
   async crawlByTime() {
     while (true) {
-      await this.delay(180000);
+      await this.delay(20000);
       try {
-        await this.getListBooks();
         await this.delay(2000);
         await this.getListBookTikiTrading();
       }
