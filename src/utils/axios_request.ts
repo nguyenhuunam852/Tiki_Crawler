@@ -16,20 +16,36 @@ export class AxiosRequest {
     }
 
     async postRequest<T>(args: new () => T, url: string, config: {}, data: {}) {
-        var response = await this.client.post(url, config, data)
-        if (args) {
-            return plainToClass(args, response.data);
+        try {
+            var response = await this.client.post(url, config, data)
+            if (args) {
+                return plainToClass(args, response.data);
+            }
+            return response.data;
         }
-        return response.data;
+        catch (e) {
+            if (e.reponse.data) {
+                return e;
+            }
+            return e.reponse.data;
+        }
         // return await response.data;
     }
 
     async getRequest<T>(args: new () => T, url: string, config: {}, data: {}) {
-        var response = await this.client.get(url, config, data);
-        if (args) {
-            return plainToClass(args, response.data);
+        try {
+            var response = await this.client.get(url, config, data);
+            if (args) {
+                return plainToClass(args, response.data);
+            }
+            return response.data;
         }
-        return response.data;
+        catch (e) {
+            if (e.reponse.data) {
+                return e;
+            }
+            return e.reponse.data;
+        }
     }
 
 

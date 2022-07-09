@@ -32,11 +32,13 @@
     "mysql2": "^2.3.3",
     "node-html-parser": "^5.3.3",
     "node-telegram-bot-api": "^0.57.0",
+    "random-useragent": "^0.5.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "tough-cookie": "^4.0.0",
-    "typeorm": "^0.3.6"
+    "typeorm": "^0.3.6",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
