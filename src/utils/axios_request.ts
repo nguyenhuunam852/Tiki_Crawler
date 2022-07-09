@@ -41,6 +41,7 @@ export class AxiosRequest {
             return response.data;
         }
         catch (e) {
+            console.log(e);
             if (e.reponse.data) {
                 return e;
             }

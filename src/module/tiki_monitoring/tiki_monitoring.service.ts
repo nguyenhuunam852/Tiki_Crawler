@@ -5,6 +5,7 @@ import * as randomUseragent from "random-useragent";
 import { Local_Storage_Management } from "src/utils/local_storage";
 import { tikiBuyingService } from "../tiki_buying/tiki_buying.service";
 import { tiki_config } from "src/config/tiki_config";
+import { identity } from "rxjs";
 
 @Injectable()
 export class tikiMonitoringService {
@@ -22,12 +23,14 @@ export class tikiMonitoringService {
         this.crawlByTime();
     }
 
-    async Monitoring(spid: number, time: number) {
+    Monitoring(id: number, spid: number, time: number) {
         let data = {
+            origin_id: id,
             spid: spid,
             time: + time,
             insertTime: + new Date()
         }
+        console.log(data);
 
         let callback = this.excuteContext.insertData;
         let newData = this.excuteContext.checkExisted("monitoring", ["spid"], data, callback);
@@ -41,20 +44,23 @@ export class tikiMonitoringService {
         }
     }
 
-    async checkStock(spid: number) {
-        let result = await this.client.getRequest(undefined, tiki_config.tiki_info, {
+    async checkStock(origin_id: number, spid: number) {
+        let result = await this.client.getRequest(undefined, tiki_config.tiki_info.replace(":id", "" + origin_id).replace(":spid", "" + spid), {
             headers: this.headers
         }, {})
-
-        console.log(result)
-
         if (result.stock_item) {
             if (result.stock_item.qty) {
                 console.log(result.stock_item.qty)
             }
+            return result.stock_item.qty;
         }
-
-        return result.stock_item.qty;
+        else {
+            let index = this.excuteContext.data["monitoring"].indexof(item => item.spid == spid);
+            if (index > -1) {
+                this.excuteContext.data["monitoring"] = this.excuteContext.data["monitoring"].splice(index, 1);
+            }
+            return null;
+        }
     }
 
     async delay(ms: number) {
@@ -65,13 +71,13 @@ export class tikiMonitoringService {
     async crawlByTime() {
         while (true) {
             let monitoringList = this.excuteContext.data["monitoring"];
-            console.log(monitoringList)
             for (let item of monitoringList) {
                 await this.delay(1000);
                 try {
                     let difTime = Math.abs((+new Date() - item.insertTime));
                     if (difTime > item.time) {
-                        await this.checkStock(item.spid);
+                        console.log("Scanning:" + item.spid)
+                        await this.checkStock(+ item.origin_id, + item.spid);
                         item.insertTime = + new Date();
                         this.excuteContext.updateData("monitoring", ["spid"], item, this.excuteContext, true);
                         this.excuteContext.saveFile("monitoring");
