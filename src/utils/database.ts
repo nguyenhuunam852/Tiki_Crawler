@@ -30,7 +30,12 @@ export class DatabaseManager {
     }
 
     getMaxByType(types) {
-        return `select * from books having id in (select Max(id) from books where providers = '${types}')`
+        return `select book_id,day_ago from books where id =
+        (
+         select Max(id) as maxid from books a
+         group by day_ago
+         having day_ago in (select Min(day_ago) from books where providers = '${types}')
+        ) `
     }
 
 }

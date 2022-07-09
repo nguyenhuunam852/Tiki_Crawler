@@ -1,5 +1,5 @@
 import { enumProvider } from "src/enum/provider.enum";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('books')
 export class Books {
@@ -20,6 +20,8 @@ export class Books {
     @Column({ type: 'varchar', length: 255, nullable: false, default: "" })
     public book_short_link: string;
 
+    @Column({ type: 'int', nullable: true, default: 100 })
+    public day_ago: string;
 
 
     @Column({ type: 'enum', enum: enumProvider, nullable: false, default: enumProvider.tiki_light_novel })
