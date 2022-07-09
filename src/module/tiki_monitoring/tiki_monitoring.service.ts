@@ -44,6 +44,17 @@ export class tikiMonitoringService {
         }
     }
 
+    removeMonitoring(spid: number) {
+        console.log("Destroy:" + spid.toString())
+        let index = this.excuteContext.data["monitoring"].map(item => item.spid).indexOf(spid);
+        console.log("Index:" + index)
+        if (index > -1) {
+            this.excuteContext.data["monitoring"].splice(index, 1);
+            this.excuteContext.saveFile("monitoring");
+        }
+    }
+
+
     async checkStock(origin_id: number, spid: number) {
         let result = await this.client.getRequest(undefined, tiki_config.tiki_info.replace(":id", "" + origin_id).replace(":spid", "" + spid), {
             headers: this.headers
@@ -55,9 +66,10 @@ export class tikiMonitoringService {
             return result.stock_item.qty;
         }
         else {
-            let index = this.excuteContext.data["monitoring"].indexof(item => item.spid == spid);
+            let index = this.excuteContext.data["monitoring"].indexOf(item => item.spid == spid);
             if (index > -1) {
                 this.excuteContext.data["monitoring"] = this.excuteContext.data["monitoring"].splice(index, 1);
+                this.excuteContext.saveFile("monitoring");
             }
             return null;
         }
