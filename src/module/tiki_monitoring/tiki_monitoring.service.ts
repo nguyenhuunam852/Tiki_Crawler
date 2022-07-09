@@ -18,12 +18,14 @@ export class tikiMonitoringService {
         this.headers = {
             "User-Agent": randomUseragent.getRandom()
         }
+
+        this.crawlByTime();
     }
 
     async Monitoring(spid: number, time: number) {
         let data = {
             spid: spid,
-            time: time,
+            time: + time,
             insertTime: + new Date()
         }
 
@@ -43,6 +45,43 @@ export class tikiMonitoringService {
         let result = await this.client.getRequest(undefined, tiki_config.tiki_info, {
             headers: this.headers
         }, {})
+
+        console.log(result)
+
+        if (result.stock_item) {
+            if (result.stock_item.qty) {
+                console.log(result.stock_item.qty)
+            }
+        }
+
+        return result.stock_item.qty;
+    }
+
+    async delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
+    async crawlByTime() {
+        while (true) {
+            let monitoringList = this.excuteContext.data["monitoring"];
+            console.log(monitoringList)
+            for (let item of monitoringList) {
+                await this.delay(1000);
+                try {
+                    let difTime = Math.abs((+new Date() - item.insertTime));
+                    if (difTime > item.time) {
+                        await this.checkStock(item.spid);
+                        item.insertTime = + new Date();
+                        this.excuteContext.updateData("monitoring", ["spid"], item, this.excuteContext, true);
+                        this.excuteContext.saveFile("monitoring");
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+        }
     }
 
 

@@ -7,6 +7,7 @@ export class Local_Storage_Management {
         this.data = {
             user_account: JSON.parse(fs.readFileSync('./src/local/user_account.json')),
             account: JSON.parse(fs.readFileSync('./src/local/account.json')),
+            monitoring: JSON.parse(fs.readFileSync('./src/local/monitoring.json')),
         }
     }
 

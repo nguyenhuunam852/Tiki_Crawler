@@ -7,21 +7,21 @@ export class AppController {
 
   @Get()
   async getNewestBook() {
-    let result = await this.appService.getListBooks();
-    if (result) {
-      return result.splice(0, result.length - 1);
-    }
-    return "errors";
+    // let result = await this.appService.getListBooks();
+    // if (result) {
+    //   return result.splice(0, result.length - 1);
+    // }
+    // return "errors";
   }
 
 
   @Get('test')
   async getNewestTikiTrading() {
-    let result = await this.appService.getListBookTikiTrading();
-    if (result) {
-      return result.splice(0, result.length - 1);
-    }
-    return "errors";
+    // let result = await this.appService.getListBookTikiTrading();
+    // if (result) {
+    //   return result.splice(0, result.length - 1);
+    // }
+    // return "errors";
   }
 
 }
