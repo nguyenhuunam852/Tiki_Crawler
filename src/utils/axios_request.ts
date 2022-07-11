@@ -17,37 +17,52 @@ export class AxiosRequest {
 
     async postRequest<T>(args: new () => T, url: string, config: {}, data: {}) {
         try {
-            var response = await this.client.post(url, config, data)
+            var response = await this.client.post(url, data, config)
             if (args) {
                 return plainToClass(args, response.data);
             }
             return response.data;
         }
         catch (e) {
-            if (e.reponse.data) {
+            if (!e.response.data) {
                 return e;
             }
-            return e.reponse.data;
+            return e.response.data;
         }
-        // return await response.data;
     }
 
     async getRequest<T>(args: new () => T, url: string, config: {}, data: {}) {
         try {
-            var response = await this.client.get(url, config, data);
+            var response = await this.client.get(url, config);
             if (args) {
                 return plainToClass(args, response.data);
             }
             return response.data;
         }
         catch (e) {
-            console.log(e);
-            if (e.reponse.data) {
+            if (e.response.data) {
                 return e;
             }
-            return e.reponse.data;
+            return e.response.data;
         }
     }
+
+    async putRequest<T>(args: new () => T, url: string, config: {}, data: {}) {
+        try {
+            var response = await this.client.put(url, data, config);
+            if (args) {
+                return plainToClass(args, response.data);
+            }
+            return response.data;
+        }
+        catch (e) {
+            if (e.response.data) {
+                return e;
+            }
+            return e.response.data;
+        }
+    }
+
 
 
 }

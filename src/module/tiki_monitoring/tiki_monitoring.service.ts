@@ -20,7 +20,7 @@ export class tikiMonitoringService {
             "User-Agent": randomUseragent.getRandom()
         }
 
-        this.crawlByTime();
+        // this.crawlByTime();
     }
 
     Monitoring(id: number, spid: number, time: number) {

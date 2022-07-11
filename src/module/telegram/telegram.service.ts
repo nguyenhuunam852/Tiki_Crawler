@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as TelegramBot from 'node-telegram-bot-api';
 import * as dotenv from 'dotenv';
 import { tikiMonitoringService } from "../tiki_monitoring/tiki_monitoring.service";
+import { tikiBuyingService } from "../tiki_buying/tiki_buying.service";
 dotenv.config();
 
 @Injectable()
@@ -9,7 +10,7 @@ export class TelegramService {
     private buyer_token: string;
     private buyer_bot: TelegramBot
 
-    constructor(private readonly tikiMonitoringService: tikiMonitoringService) {
+    constructor(private readonly tikiMonitoringService: tikiMonitoringService, private readonly tikiBuyingService: tikiBuyingService) {
         this.buyer_token = process.env.TELEGRAM_MONITORING;
         console.log(this.buyer_token)
         if (this.buyer_token) {
@@ -39,6 +40,13 @@ export class TelegramService {
                                     let spid = + add_command[2];
                                     let time = + add_command[3];
                                     this.tikiMonitoringService.Monitoring(id, spid, time);
+                                }
+                                if (add_command[0] == "/pay") {
+                                    let spid = + add_command[1];
+                                    let amount = + add_command[2];
+                                    let amountAccount = + add_command[3];
+
+                                    this.tikiBuyingService.buyProduct("0964056715", "nam781999", spid, amount);
                                 }
                             }
                         }
