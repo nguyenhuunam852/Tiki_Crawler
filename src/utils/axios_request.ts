@@ -24,6 +24,7 @@ export class AxiosRequest {
             return response.data;
         }
         catch (e) {
+            console.log(e.response.data)
             if (!e.response.data) {
                 return e;
             }
@@ -40,6 +41,7 @@ export class AxiosRequest {
             return response.data;
         }
         catch (e) {
+            console.log(e.response.data)
             if (e.response.data) {
                 return e;
             }
@@ -56,6 +58,8 @@ export class AxiosRequest {
             return response.data;
         }
         catch (e) {
+
+            console.log(e.response.data)
             if (e.response.data) {
                 return e;
             }

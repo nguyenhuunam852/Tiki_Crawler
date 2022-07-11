@@ -77,6 +77,7 @@ export class tikiBuyingService {
             return this;
         }
         catch (e) {
+            console.log(e)
             return null;
         }
     }
@@ -85,6 +86,17 @@ export class tikiBuyingService {
             let result = await this.client.getRequest(undefined, `${this.urlLink["base"]}${this.urlLink["getCartInfo"]}`, {
                 headers: this.headers
             }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.getCartInfo(spid)
+                }
+                return this.getCartInfo(spid)
+            }
+            if (!result.items) {
+                return this.getCartInfo(spid)
+            }
+
             let resultArray = []
 
             result.items.forEach(element => {
@@ -97,65 +109,178 @@ export class tikiBuyingService {
                         selected: true
                     })
                 }
+                else {
+                    resultArray.push({
+                        seller_id: element.seller_id,
+                        item_id: element.id,
+                        product_id: element.product_id,
+                        parent_item_id: element.parent_item_id,
+                        selected: false
+                    })
+                }
             });
 
             return resultArray;
         }
         catch (e) {
+            console.log(e)
             return null;
         }
     }
     async selectItem(body: any) {
-        let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["selectItem"]}`, {
-            headers: this.headers
-        }, body);
-        return result;
+        try {
+
+            let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["selectItem"]}`, {
+                headers: this.headers
+            }, body);
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.selectItem(body)
+                }
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
+
     }
     async checkoutBuying() {
-        let result = await this.client.getRequest(undefined, `${this.urlLink["base"]}${this.urlLink["checkout"]}`, {
-            headers: this.headers
-        }, {});
-        return result;
+        try {
+            let result = await this.client.getRequest(undefined, `${this.urlLink["base"]}${this.urlLink["checkout"]}`, {
+                headers: this.headers
+            }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.checkoutBuying()
+                }
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
+
     }
     async summaryBuying() {
-        let result = await this.client.getRequest(undefined, `${this.urlLink["base"]}${this.urlLink["summary"]}`, {
-            headers: this.headers
-        }, {});
-        return result;
+        try {
+            let result = await this.client.getRequest(undefined, `${this.urlLink["base"]}${this.urlLink["summary"]}`, {
+                headers: this.headers
+            }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.summaryBuying()
+                }
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
     }
     async shippingAddress(id: string) {
-        let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["shippingAddress"].replace(":id", id)}`, {
-            headers: this.headers
-        }, {});
-        return result;
+        try {
+            let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["shippingAddress"].replace(":id", id)}`, {
+                headers: this.headers
+            }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.shippingAddress(id)
+                }
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
     }
     async changePaymentMethod() {
-        let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["codPaymentMethod"]}`, {
-            headers: this.headers
-        }, {});
-        return result;
+        try {
+            let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["codPaymentMethod"]}`, {
+                headers: this.headers
+            }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.changePaymentMethod()
+                }
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
+
     }
     async checkoutPayment() {
-        let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["codPaymentMethod"]}`, {
-            headers: this.headers
-        }, {});
-        return result;
+        try {
+            let result = await this.client.putRequest(undefined, `${this.urlLink["base"]}${this.urlLink["codPaymentMethod"]}`, {
+                headers: this.headers
+            }, {});
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.checkoutPayment()
+                }
+                throw "error"
+            }
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
     }
     async checkoutPaymentDone() {
-        let result = await this.client.postRequest(undefined, `${this.urlLink["base"]}${this.urlLink["checkoutPaymentDone"]}`, {
-            headers: this.headers
-        }, {
-            "payment": {
-                "method": "cod",
-                "option_id": null
-            },
-            "tax_info": null,
-            "cybersource_information": {},
-            "customer_note": "",
-            "delivery_option": null,
-            "order_notes": ""
-        });
-        return result;
+        try {
+
+            let result = await this.client.postRequest(undefined, `${this.urlLink["base"]}${this.urlLink["checkoutPaymentDone"]}`, {
+                headers: this.headers
+            }, {
+                "payment": {
+                    "method": "cod",
+                    "option_id": null
+                },
+                "tax_info": null,
+                "cybersource_information": {},
+                "customer_note": "",
+                "delivery_option": null,
+                "order_notes": ""
+            });
+
+            if (result.error) {
+                if (result.error.code == 428) {
+                    return this.checkoutPaymentDone()
+                }
+                console.log(result)
+                throw "error"
+            }
+
+            return result;
+        }
+        catch (e) {
+            console.log(e)
+            return null;
+        }
     }
 
 

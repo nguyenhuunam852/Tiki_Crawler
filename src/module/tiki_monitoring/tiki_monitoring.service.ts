@@ -12,6 +12,7 @@ export class tikiMonitoringService {
     public listTikiBuyer: Array<tikiBuyingService>;
     public client: AxiosRequest;
     public headers: {};
+    public excuteContextPubic;
 
     constructor(private readonly excuteContext: Local_Storage_Management) {
         this.listTikiBuyer = new Array<tikiBuyingService>();
@@ -19,6 +20,7 @@ export class tikiMonitoringService {
         this.headers = {
             "User-Agent": randomUseragent.getRandom()
         }
+        this.excuteContextPubic = this.excuteContext;
 
         // this.crawlByTime();
     }

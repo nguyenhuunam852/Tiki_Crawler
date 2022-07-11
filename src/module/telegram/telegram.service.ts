@@ -45,8 +45,16 @@ export class TelegramService {
                                     let spid = + add_command[1];
                                     let amount = + add_command[2];
                                     let amountAccount = + add_command[3];
-
-                                    this.tikiBuyingService.buyProduct("0964056715", "nam781999", spid, amount);
+                                    for (let i = 0; i < amountAccount; i++) {
+                                        try {
+                                            let account = this.tikiMonitoringService.excuteContextPubic.data["account"][i]
+                                            console.log(account)
+                                            await this.tikiBuyingService.buyProduct(account.username, account.password, spid, amount);
+                                        }
+                                        catch (e) {
+                                            console.log(e)
+                                        }
+                                    }
                                 }
                             }
                         }
